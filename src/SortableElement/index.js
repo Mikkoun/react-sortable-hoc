@@ -1,31 +1,31 @@
-import React, {Component} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {findDOMNode} from 'react-dom';
+import { findDOMNode } from 'react-dom';
 import invariant from 'invariant';
 
-import {provideDisplayName, omit} from '../utils';
+import { provideDisplayName, omit } from '../utils';
 
 // Export Higher Order Sortable Element Component
-export default function sortableElement(WrappedComponent, config = {withRef: false}) {
-  return class extends Component {
+export default function sortableElement(WrappedComponent, config = { withRef: false }) {
+  return class extends PureComponent {
     static displayName = provideDisplayName('sortableElement', WrappedComponent);
 
     static contextTypes = {
-      manager: PropTypes.object.isRequired,
+      manager: PropTypes.object.isRequired
     };
 
     static propTypes = {
       index: PropTypes.number.isRequired,
       collection: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-      disabled: PropTypes.bool,
+      disabled: PropTypes.bool
     };
 
     static defaultProps = {
-      collection: 0,
+      collection: 0
     };
 
     componentDidMount() {
-      const {collection, disabled, index} = this.props;
+      const { collection, disabled, index } = this.props;
 
       if (!disabled) {
         this.setDraggable(collection, index);
@@ -37,7 +37,7 @@ export default function sortableElement(WrappedComponent, config = {withRef: fal
         this.node.sortableInfo.index = nextProps.index;
       }
       if (this.props.disabled !== nextProps.disabled) {
-        const {collection, disabled, index} = nextProps;
+        const { collection, disabled, index } = nextProps;
         if (disabled) {
           this.removeDraggable(collection);
         } else {
@@ -50,7 +50,7 @@ export default function sortableElement(WrappedComponent, config = {withRef: fal
     }
 
     componentWillUnmount() {
-      const {collection, disabled} = this.props;
+      const { collection, disabled } = this.props;
 
       if (!disabled) this.removeDraggable(collection);
     }
@@ -61,10 +61,10 @@ export default function sortableElement(WrappedComponent, config = {withRef: fal
       node.sortableInfo = {
         index,
         collection,
-        manager: this.context.manager,
+        manager: this.context.manager
       };
 
-      this.ref = {node};
+      this.ref = { node };
       this.context.manager.add(collection, this.ref);
     }
 
@@ -84,10 +84,7 @@ export default function sortableElement(WrappedComponent, config = {withRef: fal
       const ref = config.withRef ? 'wrappedInstance' : null;
 
       return (
-        <WrappedComponent
-          ref={ref}
-          {...omit(this.props, 'collection', 'disabled', 'index')}
-        />
+        <WrappedComponent ref={ref} {...omit(this.props, 'collection', 'disabled', 'index')} />
       );
     }
   };
